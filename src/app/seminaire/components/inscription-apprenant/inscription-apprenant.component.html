@@ -1,0 +1,62 @@
+<app-planning-view [planning]="planning"></app-planning-view>
+
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+    <div class="row">
+      <div class="col-2 d-flex align-items-center">
+        <button class="col-12 btn btn-outline-primary border-0" type="button" (click)="goToListInscris()">
+          <em class="fa fa-arrow-left fa-lg"></em>
+        </button>
+      </div>
+      <div class="col-8 d-flex align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">Inscrire un apprenant</h6>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <alert></alert>
+    </div>
+    <form class="row g-3" [formGroup]="inscriptionForm" (ngSubmit)="inscriptionEdit && inscriptionEdit.id ? updateInscription() : saveInscription()">
+      <div class="col-md-6 col-sm-12">
+        <label for="nom" class="form-label">Nom</label>
+        <input type="text" class="form-control" id="nom" formControlName="nom">
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <label for="prenom" class="form-label">Prénom</label>
+        <input type="text" class="form-control" id="prenom" formControlName="prenom">
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" class="form-control" id="email" formControlName="email">
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <label for="telephone" class="form-label">Téléphone</label>
+        <input type="tel" class="form-control" id="telephone" formControlName="telephone">
+      </div>
+      <div class="col-md-4 col-sm-12">
+        <label for="typeinscription" class="form-label">Options</label>
+        <select id="typeinscription" class="form-select" formControlName="typeInscription">
+          <option [value]="''">Sélectionnez....</option>
+          <option [value]="'EN_LIGNE'">En ligne</option>
+          <option [value]="'PRESENTIEL'">En présentiel</option>
+        </select>
+      </div>
+      <div class="col-md-4 col-sm-12">
+        <label for="avance" class="form-label">Montant versé</label>
+        <input type="number" (keyup)="onChangeAvance($event)" class="form-control" id="avance" formControlName="avance">
+      </div>
+      <div class="col-md-4 col-sm-12">
+        <label for="reliquat" class="form-label">Montant restant</label>
+        <input type="number" class="form-control" id="reliquat" formControlName="reliquat">
+      </div>
+
+      <div class="col-12">
+        <button type="submit" [disabled]="!inscriptionForm.valid" class="btn btn-primary">Enregistrer</button>
+        &nbsp;&nbsp;
+        <button type="button" (click)="clear()" class="btn btn-outline-dark">Annuler</button>
+      </div>
+    </form>
+
+  </div>
+</div>

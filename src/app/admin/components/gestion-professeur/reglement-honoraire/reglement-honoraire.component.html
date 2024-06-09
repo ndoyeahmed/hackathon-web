@@ -1,0 +1,49 @@
+<!-- Tableau depense -->
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Historique réglements</h6>
+  </div>
+  <div class="card-body">
+    <div class="row mb-3">
+      <div class="col-6">
+        <div class="table-responsive">
+          <table class="table text-white table-bordered">
+            <tr style="background-color: #285001;">
+              <td>Montant total :</td>
+              <td>{{totalReglement}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 col-lg-3 col-sm-12 offset-md-9 offset-lg-9">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="tapez votre recherche..." aria-label="tapez votre recherche..." aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2"><em class="fa fa-search"></em></span>
+          </div>
+        </div>
+      </div>
+    </div>
+      <div class="table-responsive">
+          <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+              <thead>
+                  <tr>
+                      <th>Date</th>
+                      <th>Montant</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let reglement of reglements | searchFilter: searchTerm">
+                      <td *ngIf="reglement.montant && reglement.montant > 0">{{reglement.date | date: 'dd/MM/YYYY'}}</td>
+                      <td *ngIf="reglement.montant && reglement.montant > 0">{{reglement.montant}}</td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+  </div>
+  <div class="card-footer">
+    <ngb-pagination (pageChange)="onPageChange($event)" [collectionSize]="totalItems" [page]="page" [pageSize]="pageSize" aria-label="Default pagination"></ngb-pagination>
+  </div>
+</div>

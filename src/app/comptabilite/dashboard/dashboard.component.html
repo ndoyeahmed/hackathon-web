@@ -1,0 +1,98 @@
+<div class="row mb-4">
+  <form class="row g-3" [formGroup]="searchForm" (ngSubmit)="search()">
+    <div class="col-md-4 col-sm-12 mb-2">
+      <label for="filter">Filtrer par :</label>
+      <select id="filter" class="form-select" formControlName="filterType" (change)="onChangeFilterType($event)">
+        <option value="jour">Jour</option>
+        <option value="mois">Mois</option>
+        <option value="annee">Année</option>
+      </select>
+    </div>
+
+    <div class="col-md-4 col-sm-12 mb-2" *ngIf="selectedFiltre === 'jour'">
+      <label for="dateDebut">Date début</label>
+      <input type="date" class="form-control" id="dateDebut" formControlName="dateDebut">
+    </div>
+    <div class="col-md-4 col-sm-12 mb-2" *ngIf="selectedFiltre === 'jour'">
+      <label for="dateFin">Date fin</label>
+      <input type="date" class="form-control" id="dateFin" formControlName="dateFin">
+    </div>
+
+    <div class="col-md-4 col-sm-12 mb-2" *ngIf="selectedFiltre === 'mois'">
+      <label for="moisdebut">Mois de début</label>
+      <select id="moisdebut" class="form-select" formControlName="moisDebut">
+        <option *ngFor="let mois of moisList" [value]="mois.id">{{mois.name}}</option>
+      </select>
+    </div>
+    <div class="col-md-4 col-sm-12 mb-2" *ngIf="selectedFiltre === 'mois'">
+      <label for="moisfin">Mois fin</label>
+      <select id="moisfin" class="form-select" formControlName="moisFin">
+        <option *ngFor="let mois of moisList" [value]="mois.id">{{mois.name}}</option>
+      </select>
+    </div>
+
+    <div class="col-md-4 col-sm-12 mb-2" *ngIf="selectedFiltre === 'annee'">
+      <label for="annee">Année</label>
+      <select id="annee" class="form-select" formControlName="annee">
+        <option *ngFor="let annee of annees" [value]="annee">{{annee}}</option>
+      </select>
+    </div>
+
+    <div class="col-12 text-end">
+      <button type="submit" class="btn btn-primary">Rechercher</button>
+      &nbsp;&nbsp;
+      <button type="button" class="btn btn-outline-dark">Annuler</button>
+    </div>
+  </form>
+</div>
+
+<div class="row">
+  <div class="card text-bg-secondary mb-3 col-md-4 cursor-pointer" [routerLink]="'/formation/planning'">
+    <div class="card-body">
+      <h5 class="card-title">Total cout formation</h5>
+      <p class="card-text">{{statistiqueDto.totalCoutInscription ? statistiqueDto.totalCoutInscription : 0 }} FCFA</p>
+    </div>
+  </div>
+  <div class="card text-bg-primary mb-3 col-md-4 cursor-pointer" [routerLink]="'/formation/inscription'">
+    <div class="card-body">
+      <h5 class="card-title">Total inscription apprenant encaissé</h5>
+      <p class="card-text">{{statistiqueDto.totalInscriptionEncaisser ? statistiqueDto.totalInscriptionEncaisser : 0 }} FCFA</p>
+    </div>
+  </div>
+  <div class="card text-bg-info mb-3 col-md-4 cursor-pointer" [routerLink]="'/formation/inscription'">
+    <div class="card-body">
+      <h5 class="card-title">Total reliquat apprenant</h5>
+      <p class="card-text">{{statistiqueDto.totalInscriptionReliquat ? statistiqueDto.totalInscriptionReliquat : 0}} FCFA</p>
+    </div>
+  </div>
+  <div class="card text-bg-secondary mb-3 col-md-4 cursor-pointer" [routerLink]="'/formation/planning'">
+    <div class="card-body">
+      <h5 class="card-title">Total charges variable ou dépenses</h5>
+      <p class="card-text">{{statistiqueDto.totalDepense ? statistiqueDto.totalDepense : 0}} FCFA</p>
+    </div>
+  </div>
+  <div class="card text-bg-primary mb-3 col-md-4 cursor-pointer" [routerLink]="'/administration/gestion-professeurs'">
+    <div class="card-body">
+      <h5 class="card-title">Total montant net professeur</h5>
+      <p class="card-text">{{statistiqueDto.totalMontantNetProf ? statistiqueDto.totalMontantNetProf : 0}} FCFA</p>
+    </div>
+  </div>
+  <div class="card text-bg-info mb-3 col-md-4 cursor-pointer" [routerLink]="'/administration/gestion-professeurs'">
+    <div class="card-body">
+      <h5 class="card-title">Total montant brut professeur</h5>
+      <p class="card-text">{{statistiqueDto.totalMontantBrutProf ? statistiqueDto.totalMontantBrutProf : 0}} FCFA</p>
+    </div>
+  </div>
+  <div class="card text-bg-warning mb-3 col-md-4 cursor-pointer" [routerLink]="'/comptability/charge-fixe'" href="javascript:void(0);">
+    <div class="card-body">
+      <h5 class="card-title">Total charge fixe</h5>
+      <p class="card-text">{{statistiqueDto.totalChargeFixe ? statistiqueDto.totalChargeFixe : 0}} FCFA</p>
+    </div>
+  </div>
+  <div class="card text-bg-dark mb-3 col-md-8 cursor-pointer">
+    <div class="card-body">
+      <h5 class="card-title">Bénéfices</h5>
+      <p class="card-text">{{statistiqueDto.benefice ? statistiqueDto.benefice : 0}} FCFA</p>
+    </div>
+  </div>
+</div>

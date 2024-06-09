@@ -1,0 +1,24 @@
+<div class="row d-flex align-items-center justify-content-center">
+  <div class="col-md-12 col-sm-12 mb-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="row d-flex align-items-center justify-content-center">
+          <div class="col-md-4 col-sm-12">
+            <div>Formation: <strong>{{planning?.libelle}}</strong></div>
+            <div>Coût formation : <strong>{{planning && planning.cout ? planning.cout : ''}} FCFA</strong></div>
+          </div>
+          <div class="col-md-4 col-sm-12">
+            <div>
+              Date début : <strong>{{planning && planning.dateDebut ? (planning.dateDebut | date: 'dd/MM/YYYY') :
+                ''}}</strong>
+            </div>
+            <div>
+              Date fin : <strong>{{ planning && planning.dateFin ? (planning.dateFin | date: 'dd/MM/YYYY') :
+                ''}}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+<div class="row d-flex justify-content-center align-items-center" style="height: 100vh;background-color: #c2c2c2;">
+  <div class="form-container">
+    <p class="title">Login</p>
+    <p class="text-danger text-center">{{err}}</p>
+    <form class="form" [formGroup]="form" (ngSubmit)="login()">
+      <div class="input-group">
+        <label for="username">Email</label>
+        <input type="text" name="username" id="username" placeholder="" formControlName="login">
+      </div>
+      <div class="input-group">
+        <label for="password">Mot de passe</label>
+        <input type="password" name="password" id="password" placeholder="" formControlName="password">
+        <div class="forgot">
+          <!-- <a rel="noopener noreferrer" href="#">Forgot Password ?</a> -->
+        </div>
+      </div>
+      <button type="submit" class="sign">
+        <div *ngIf="submitting">
+          <span class="spinner-border spinner-border-sm mr-3" role="status"></span> Connexion en cours...
+        </div>
+        <span *ngIf="!submitting">Se connecter</span>
+      </button>
+    </form>
+  </div>
+</div>

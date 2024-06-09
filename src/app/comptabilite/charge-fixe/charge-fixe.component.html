@@ -1,0 +1,136 @@
+<div class="row mb-3" *ngIf="!isAdd">
+  <div class="col-4">
+    <button class="col-12 btn btn-outline-primary" type="button" (click)="isAdd = true;">
+      Ajouter une charge
+    </button>
+  </div>
+</div>
+
+<!-- Formulaire ajout depense -->
+<div class="card mb-4" *ngIf="isAdd">
+  <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Ajouter une nouvelle charge</h6>
+  </div>
+  <div class="card-body">
+    <alert></alert>
+    <form class="row g-3" [formGroup]="chargeFixeForm" (ngSubmit)="chargeFixeEdit && chargeFixeEdit.id ? edit() : save()" *ngIf="!onAddTypeCharge">
+      <div class="col-md-4 col-sm-12">
+        <label for="typeChargeFixe" class="form-label">Charge</label>
+        <div class="input-group">
+          <select id="typeChargeFixe" class="form-select" formControlName="typeChargeFixe">
+            <option selected [value]="0" hidden>Selectionnez la charge...</option>
+            <option *ngFor="let type of typeCharges" [value]="type.id">
+              {{type.libelle}}
+            </option>
+          </select>
+          <button class="btn btn-outline-secondary" type="button" (click)="onAddTypeCharge=true">
+            <em class="fa fa-plus"></em>
+          </button>
+        </div>
+      </div>
+      <div class="col-md-4 col-sm-12">
+        <label for="montant" class="form-label">Montant</label>
+        <input type="number" class="form-control" id="montant" formControlName="montant">
+      </div>
+
+      <div class="col-md-4 col-sm-12 mt-5">
+        <button type="submit" [disabled]="!chargeFixeForm.valid" class="btn btn-primary">Enregistrer</button>
+        &nbsp;&nbsp;
+        <button type="button" class="btn btn-outline-dark" (click)="cancel()">Annuler</button>
+      </div>
+    </form>
+    <form class="row g-3" [formGroup]="typeChargeForm" (ngSubmit)="typeChargeEdit && typeChargeEdit.id ? editType() : saveType()" *ngIf="onAddTypeCharge">
+      <div class="col-md-4 col-sm-12">
+        <label for="libelle" class="form-label">Charge fixe</label>
+        <input type="text" class="form-control" id="libelle" formControlName="libelle">
+      </div>
+
+      <div class="col-md-4 col-sm-12 mt-5">
+        <button type="submit" [disabled]="!typeChargeForm.valid" class="btn btn-primary">Enregistrer</button>
+        &nbsp;&nbsp;
+        <button type="button" class="btn btn-outline-dark" (click)="cancelType()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Tableau depense -->
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+      <div class="row">
+          <div class="col-8">
+              <h6 class="m-0 font-weight-bold text-primary">Listes des charges fixes</h6>
+          </div>
+          <div class="col-4 text-end">
+              <button type="button" class="btn btn-outline-secondary" (click)="downloadPDF()">Télécharger en PDF</button>
+          </div>
+      </div>
+  </div>
+  <div class="card-body">
+    <div class="row mb-3">
+      <div class="col-6">
+        <div class="table-responsive">
+          <table class="table text-white table-bordered">
+            <tr style="background-color: #285001;">
+              <td>Montant total :</td>
+              <td>{{total}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 col-lg-3 col-sm-12 offset-md-9 offset-lg-9">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="tapez votre recherche..." aria-label="tapez votre recherche..." aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2"><em class="fa fa-search"></em></span>
+          </div>
+        </div>
+      </div>
+    </div>
+      <div class="table-responsive">
+          <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+              <thead>
+                  <tr>
+                      <th>#</th>
+                      <th>Charge</th>
+                      <th>Montant</th>
+                      <th>Date</th>
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let charge of chargeFixes | searchFilter: searchTerm">
+                      <td>{{chargeFixes.indexOf(charge) + 1}}</td>
+                      <td>{{charge.typeChargeFixe.libelle}}</td>
+                      <td>{{charge.montant}}</td>
+                      <td>{{charge.date | date: 'dd/MM/YYYY'}}</td>
+                      <td *ngIf="!charge.deleteAction">
+                          <button class="btn btn-outline-dark" type="button" (click)="onEdit(charge)">
+                            <em class="fa fa-pen"></em>
+                          </button>
+                          &nbsp;&nbsp;
+                          <button class="btn btn-outline-dark" type="button" (click)="onDelete(charge)">
+                            <em class="fa fa-trash"></em>
+                          </button>
+                      </td>
+                      <td *ngIf="charge.deleteAction">
+                        <h6>Confirmez la supression de la charge!</h6>
+                        <button class="btn btn-outline-dark" title="Valider" type="button" (click)="deleteCharge(charge)">
+                          <em class="fa fa-check"></em>
+                        </button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-outline-dark" title="Annuler" type="button" (click)="cancelDeleteAction(charge)">
+                          <em class="fa fa-remove"></em>
+                        </button>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+        <div class="card-footer">
+          <ngb-pagination (pageChange)="onPageChange($event)" [collectionSize]="totalItems" [page]="page" [pageSize]="pageSize" aria-label="Default pagination"></ngb-pagination>
+        </div>
+      </div>
+  </div>
+</div>

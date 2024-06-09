@@ -1,0 +1,165 @@
+<div class="card shadow mb-4">
+  <div class="card-header py-3 d-flex align-items-center">
+      <h6 class="m-0 font-weight-bold text-primary">Gestion des Formations et Modules</h6>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12 mb-4" *ngIf="!isAdd">
+        <button class="btn btn-outline-primary" type="button" (click)="isAdd = true;">
+          Ajouter une formation
+        </button>
+      </div>
+      <div class="col-12" *ngIf="isAdd">
+        <alert></alert>
+        <form class="row g-3" [formGroup]="formationForm"
+          (ngSubmit)="formationEdit && formationEdit.id ? edit() : save()">
+          <div class="col-md-6 col-sm-12 mb-2">
+            <input placeholder="Saisir le nom de la formation" type="text" class="form-control" id="libelle" formControlName="libelle">
+          </div>
+
+          <div class="col-6">
+            <button type="submit" [disabled]="!formationForm.valid" class="btn btn-primary">Enregistrer</button>
+            &nbsp;&nbsp;
+            <button type="button" class="btn btn-outline-dark" (click)="cancel()">Annuler</button>
+          </div>
+        </form>
+      </div>
+      <div class="col-12">
+        <div class="row">
+          <div class="col-md-3 col-lg-3 col-sm-12 offset-md-9 offset-lg-9">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="tapez votre recherche..." aria-label="tapez votre recherche..." aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon2"><em class="fa fa-search"></em></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Formations</th>
+                <th>Modules</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let formation of formations | searchFilter: searchTerm">
+                <td>{{formations.indexOf(formation)+1}}</td>
+                <td>{{formation.libelle}}</td>
+                <td>
+                  <button class="btn btn-outline-dark" type="button" (click)="open(modalContent, 'modules-list', formation)">
+                    Afficher
+                  </button>
+                </td>
+                <td *ngIf="!formation.deleteAction">
+                  <button class="btn btn-outline-dark" type="button" (click)="onEdit(formation)">
+                    <em class="fa fa-pen"></em>
+                  </button>
+                  &nbsp;&nbsp;
+                  <button class="btn btn-outline-dark" type="button" (click)="onDelete(formation)">
+                    <em class="fa fa-trash"></em>
+                  </button>
+                </td>
+                <td *ngIf="formation.deleteAction">
+                  <h6>Confirmez la supression de la formation!</h6>
+                  <button class="btn btn-outline-dark" title="Valider" type="button"
+                    (click)="deleteFormation(formation)">
+                    <em class="fa fa-check"></em>
+                  </button>
+                  &nbsp;&nbsp;
+                  <button class="btn btn-outline-dark" title="Annuler" type="button"
+                    (click)="cancelDeleteAction(formation)">
+                    <em class="fa fa-remove"></em>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <ngb-pagination (pageChange)="onPageChange($event)" [collectionSize]="totalItems" [page]="page" [pageSize]="pageSize" aria-label="Default pagination"></ngb-pagination>
+  </div>
+</div>
+
+<ng-template #modalContent let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" *ngIf="view==='modules-list'">
+    Liste des modules de la formation: {{formationView.libelle}}
+  </h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-12 mb-4" *ngIf="!isAddModule">
+        <button class="btn btn-outline-primary" type="button" (click)="isAddModule = true;">
+          Ajouter un module
+        </button>
+      </div>
+      <div class="col-12" *ngIf="isAddModule">
+        <alert></alert>
+        <form class="row g-3" [formGroup]="moduleForm"
+              (ngSubmit)="moduleEdit && moduleEdit.id ? editModule() : saveModule()">
+          <div class="col-md-6 col-sm-12 mb-2">
+            <label for="module">Module</label>
+            <input placeholder="Saisir le nom du module" type="text" class="form-control" id="module" formControlName="module">
+          </div>
+
+          <div class="col-6 pt-2">
+            <button type="submit" [disabled]="!moduleForm.valid" class="btn btn-primary mt-4">Enregistrer</button>
+            &nbsp;&nbsp;
+            <button type="button" class="btn btn-outline-dark mt-4" (click)="cancelModuleSave()">Annuler</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>#</th>
+            <th>Module</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let module of modules">
+            <td>{{modules.indexOf(module) + 1}}</td>
+            <td>{{module.libelle}}</td>
+            <td *ngIf="!module.deleteAction">
+              <button class="btn btn-outline-dark" type="button" (click)="onEditModule(module)">
+                <em class="fa fa-pen"></em>
+              </button>
+              &nbsp;&nbsp;
+              <button class="btn btn-outline-dark" type="button" (click)="onDeleteModule(module)">
+                <em class="fa fa-trash"></em>
+              </button>
+            </td>
+            <td *ngIf="module.deleteAction">
+              <h6>Confirmez la supression du module!</h6>
+              <button class="btn btn-outline-dark" title="Valider" type="button"
+                      (click)="deleteModule(module)">
+                <em class="fa fa-check"></em>
+              </button>
+              &nbsp;&nbsp;
+              <button class="btn btn-outline-dark" title="Annuler" type="button"
+                      (click)="cancelModuleDeleteAction(module)">
+                <em class="fa fa-remove"></em>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="card-footer">
+          <ngb-pagination (pageChange)="onPageChangeModule($event)" [collectionSize]="totalItemsModule" [page]="pageModule" [pageSize]="pageSizeModule" aria-label="Default pagination"></ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

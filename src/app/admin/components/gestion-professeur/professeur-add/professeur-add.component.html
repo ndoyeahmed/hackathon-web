@@ -1,0 +1,37 @@
+<div class="card shadow">
+  <div class="card-header">
+      <!-- <h6 class="m-0 font-weight-bold text-primary">Gestion des Formations</h6> -->
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12">
+        <alert></alert>
+        <form class="row g-3" [formGroup]="professeurForm"
+          (ngSubmit)="professeurEdit && professeurEdit.id ? edit() : save()">
+          <div class="col-md-6 col-sm-12 mb-2">
+            <label for="nom" class="form-label">Nom</label>
+            <input type="text" class="form-control" id="nom" formControlName="nom">
+          </div>
+          <div class="col-md-6 col-sm-12 mb-2">
+            <label for="prenom" class="form-label">Prénom</label>
+            <input type="text" class="form-control" id="prenom" formControlName="prenom">
+          </div>
+          <div class="col-md-6 col-sm-12 mb-2">
+            <label for="email" class="form-label">Email</label>
+            <input type="text" class="form-control" id="email" formControlName="email">
+          </div>
+          <div class="col-md-6 col-sm-12 mb-2">
+            <label for="telephone" class="form-label">Téléphone</label>
+            <input type="text" class="form-control" id="telephone" formControlName="telephone">
+          </div>
+
+          <div class="col-6">
+            <button type="submit" [disabled]="!professeurForm.valid" class="btn btn-primary">Enregistrer</button>
+            &nbsp;&nbsp;
+            <button type="button" class="btn btn-outline-dark" (click)="cancel()">Annuler</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

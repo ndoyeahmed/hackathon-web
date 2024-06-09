@@ -1,0 +1,29 @@
+<h3>
+  Gestion resources humaines
+  <div class="clearfix"></div>
+</h3>
+
+<br><br>
+
+<ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs" (navChange)="onNavChange($event)">
+  <li [ngbNavItem]="1">
+    <button ngbNavLink (click)="onNavChange($event)">Ajouter un employé</button>
+    <ng-template ngbNavContent>
+      <app-employee-add [employeEdit]="employeEdit"></app-employee-add>
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="2">
+    <button ngbNavLink (click)="onNavChange($event)">Liste des employés</button>
+    <ng-template ngbNavContent>
+      <app-employee-list (onEditEmployee)="onEditEmployee($event)"></app-employee-list>
+    </ng-template>
+  </li>
+
+
+
+</ul>
+
+<div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+
+<!--  -->

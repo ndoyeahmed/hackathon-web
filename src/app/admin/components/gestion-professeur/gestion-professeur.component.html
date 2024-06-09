@@ -1,0 +1,39 @@
+<h3>
+  Gestion des professeurs
+  <div class="clearfix"></div>
+</h3>
+
+<br><br>
+
+<ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs" (navChange)="onNavChange($event)">
+  <li [ngbNavItem]="1">
+		<button ngbNavLink>Ajouter un professeur</button>
+		<ng-template ngbNavContent>
+      <app-professeur-add [professeurEdit]="professeurEdit" (onEditDone)="onEditDone($event)"></app-professeur-add>
+		</ng-template>
+	</li>
+  <li [ngbNavItem]="2">
+		<button ngbNavLink>Liste des professeurs</button>
+		<ng-template ngbNavContent>
+      <app-professeur-list (onEditProfesseur)="onEdit($event)" (onSeeHonoraire)="onShowHonoraire($event)"></app-professeur-list>
+		</ng-template>
+	</li>
+	<li [ngbNavItem]="3" *ngIf="typeHonoraire && typeHonoraire=='encours'">
+		<button ngbNavLink>Honoraires en cours de paiement</button>
+		<ng-template ngbNavContent>
+      <app-list-paiement-prof [typeHonoraire]="typeHonoraire" [professeur]="professeur"></app-list-paiement-prof>
+		</ng-template>
+	</li>
+  <li [ngbNavItem]="4" *ngIf="typeHonoraire && typeHonoraire=='payer'">
+		<button ngbNavLink>Honoraires payés</button>
+		<ng-template ngbNavContent>
+      <app-list-paiement-prof [typeHonoraire]="typeHonoraire" [professeur]="professeur"></app-list-paiement-prof>
+		</ng-template>
+	</li>
+
+</ul>
+
+<div [ngbNavOutlet]="nav" class="mt-2"></div>
+
+
+<!--  -->

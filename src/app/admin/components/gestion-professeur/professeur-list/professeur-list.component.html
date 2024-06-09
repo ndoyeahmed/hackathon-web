@@ -1,0 +1,67 @@
+<div class="row">
+  <div class="col-md-3 col-lg-3 col-sm-12 offset-md-9 offset-lg-9">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="tapez votre recherche..." aria-label="tapez votre recherche..." aria-describedby="basic-addon2">
+      <div class="input-group-append">
+        <span class="input-group-text" id="basic-addon2"><em class="fa fa-search"></em></span>
+      </div>
+    </div>
+  </div>
+</div>
+  <div class="table-responsive">
+      <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+          <thead>
+              <tr>
+                  <th>#</th>
+                  <th>Nom</th>
+                  <th>Prénom</th>
+                  <th>Email</th>
+                  <th>Téléphone</th>
+                  <th>Honoraires en cours</th>
+                  <th>Honoraires payés</th>
+                  <th>Actions</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let professeur of professeurs | searchFilter: searchTerm">
+                <td>{{professeurs.indexOf(professeur)+1}}</td>
+                <td>{{professeur.nom}}</td>
+                <td>{{professeur.prenom}}</td>
+                <td>{{professeur.email}}</td>
+                <td>{{professeur.telephone}}</td>
+                <td>
+                  <button class="btn btn-outline-dark" type="button" (click)="showHonoraireEnCours(professeur)">
+                    voir
+                  </button>
+                </td>
+                <td>
+                  <button class="btn btn-outline-dark" type="button" (click)="showHonorairePayer(professeur)">
+                    voir
+                  </button>
+                </td>
+                <td *ngIf="!professeur.deleteAction">
+                  <button class="btn btn-outline-dark" type="button" (click)="onEdit(professeur)">
+                    <em class="fa fa-pen"></em>
+                  </button>
+                  &nbsp;&nbsp;
+                  <button class="btn btn-outline-dark" type="button" (click)="onDelete(professeur)">
+                    <em class="fa fa-trash"></em>
+                  </button>
+                </td>
+                <td *ngIf="professeur.deleteAction">
+                  <h6>Confirmez la supression du professeur!</h6>
+                  <button class="btn btn-outline-dark" title="Valider" type="button" (click)="deleteProfesseur(professeur)">
+                    <em class="fa fa-check"></em>
+                  </button>
+                  &nbsp;&nbsp;
+                  <button class="btn btn-outline-dark" title="Annuler" type="button" (click)="cancelDeleteAction(professeur)">
+                    <em class="fa fa-remove"></em>
+                  </button>
+                </td>
+              </tr>
+          </tbody>
+      </table>
+      <div class="row">
+        <ngb-pagination (pageChange)="onPageChange($event)" [collectionSize]="totalItems" [page]="page" [pageSize]="pageSize" aria-label="Default pagination"></ngb-pagination>
+      </div>
+  </div>

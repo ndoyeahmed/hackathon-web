@@ -1,0 +1,189 @@
+<div class="row">
+  <div class="col-md-3 col-lg-3 col-sm-12 offset-md-9 offset-lg-9">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="tapez votre recherche..." aria-label="tapez votre recherche..." aria-describedby="basic-addon2">
+      <div class="input-group-append">
+        <span class="input-group-text" id="basic-addon2"><em class="fa fa-search"></em></span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="table-responsive">
+  <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Nom</th>
+      <th>Prénom</th>
+      <th>Email</th>
+      <th>Téléphone</th>
+      <th>Adresse</th>
+      <th>Détails Contrat</th>
+      <th>Historique paiements</th>
+      <th>Reçu Historique paiements</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let employee of employees | searchFilter: searchTerm">
+      <td>{{employees.indexOf(employee)+1}}</td>
+      <td>{{employee.firstname}}</td>
+      <td>{{employee.lastname}}</td>
+      <td>{{employee.email}}</td>
+      <td>{{employee.telephone}}</td>
+      <td>{{employee.adresse}}</td>
+      <td>
+        <button class="btn btn-outline-dark" type="button" (click)="open(modalContent, employee)">
+          consulter
+        </button>
+      </td>
+      <td>
+        <button class="btn btn-outline-dark" type="button" (click)="open(modalContent, employee, 'historique')">
+          consulter
+        </button>
+      </td>
+      <td>
+        <button class="btn btn-outline-dark" type="button" (click)="printHistoriqueFactureSalaire(employee)">
+          Imprimer
+        </button>
+      </td>
+      <td *ngIf="!employee.deleteAction">
+        <button class="btn btn-outline-dark" type="button" (click)="onEdit(employee)">
+          <em class="fa fa-pen"></em>
+        </button>
+        &nbsp;&nbsp;
+        <button class="btn btn-outline-dark" type="button" (click)="onDelete(employee)">
+          <em class="fa fa-trash"></em>
+        </button>
+      </td>
+      <td *ngIf="employee.deleteAction">
+        <h6>Confirmez la supression de cet élément!</h6>
+        <button class="btn btn-outline-dark" title="Valider" type="button" (click)="deleteProfesseur(employee)">
+          <em class="fa fa-check"></em>
+        </button>
+        &nbsp;&nbsp;
+        <button class="btn btn-outline-dark" title="Annuler" type="button" (click)="cancelDeleteAction(employee)">
+          <em class="fa fa-remove"></em>
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="row">
+    <ngb-pagination (pageChange)="onPageChange($event)" [collectionSize]="totalItems" [page]="page" [pageSize]="pageSize" aria-label="Default pagination"></ngb-pagination>
+  </div>
+</div>
+
+<ng-template #modalContent let-modal>
+  <div class="modal-header">
+    <h4 *ngIf="modalBody === 'contrat'" class="modal-title">Détails contrat</h4>
+    <h4 *ngIf="modalBody === 'historique'" class="modal-title">Historique des paiements de salaire</h4>
+    <h4 *ngIf="modalBody === 'paiement'" class="modal-title">Effectuer un paiement</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="employeeDetails" class="d-flex align-items-center mb-3 flex-wrap">
+      <h6 class="pr-3">Nom : {{employeeDetails.firstname}}</h6>
+      <h6 class="pr-3">Prénom : {{employeeDetails.lastname}}</h6>
+      <h6 class="pr-3">Email : {{employeeDetails.email}}</h6>
+      <h6>Téléphone : {{employeeDetails.telephone}}</h6>
+    </div>
+    <div *ngIf="modalBody === 'contrat'" class="table-responsive">
+      <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+          <th>Date début</th>
+          <th>Date Fin</th>
+          <th>Salaire Brut</th>
+          <th>Salaire Net</th>
+          <th>Prime</th>
+          <th>Indemnité transport</th>
+          <th>Retenue</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>{{formatDate(employeeDetails.dateDebut)}}</td>
+          <td>{{formatDate(employeeDetails.dateDebut)}}</td>
+          <td>{{employeeDetails.salaireBrut}}</td>
+          <td>{{employeeDetails.salaireNet}}</td>
+          <td>{{employeeDetails.prime}}</td>
+          <td>{{employeeDetails.indemniteTransport}}</td>
+          <td>{{employeeDetails.retenue}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="modalBody === 'historique'" class="row">
+      <form class="row g-3" [formGroup]="salaireForm" (ngSubmit)=" salaireEdit && salaireEdit.id ? edit() : save()">
+        <div class="row">
+          <div class="col-md-6 col-sm-12 mb-2">
+            <label for="date" class="form-label">Date</label>
+            <input type="date" class="form-control" id="date" formControlName="date">
+          </div>
+          <div class="col-md-6 col-sm-12 mb-2">
+            <label for="salaireNet" class="form-label">Salaire Net</label>
+            <input type="number" class="form-control" id="salaireNet" formControlName="salaireNet">
+          </div>
+          <div class="col-md-6 col-sm-12 mb-2">
+            <label for="montant" class="form-label">Montant</label>
+            <input type="number" class="form-control" id="montant" formControlName="montant">
+            <div *ngIf="onShowRequiredMsgError('montant')" class="text-danger">
+              Champ obligatoire
+            </div>
+          </div>
+          <div class="col-md-6 col-sm-12 mb-2 align-items-center justify-content-start d-flex pt-4">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            &nbsp;&nbsp;
+            <button type="button" class="btn btn-outline-dark" (click)="cancel()">Annuler</button>
+          </div>
+        </div>
+      </form>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+          <thead>
+          <tr>
+            <th>Date</th>
+            <th>Montant payé</th>
+            <th>Reçu PDF</th>
+            <th>Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let reglement of reglements">
+            <td>{{formatDate(reglement.date)}}</td>
+            <td>{{reglement.montant}}</td>
+            <td>
+              <button class="btn btn-outline-dark" type="button" (click)="printFactureSalaire(reglement)">
+                Imprimer
+              </button>
+            </td>
+            <td *ngIf="!reglement.deleteAction">
+              <button class="btn btn-outline-dark" type="button" (click)="onEditReglement(reglement)">
+                <em class="fa fa-pen"></em>
+              </button>
+              &nbsp;&nbsp;
+              <button class="btn btn-outline-dark" type="button" (click)="onDeleteReglement(reglement)">
+                <em class="fa fa-trash"></em>
+              </button>
+            </td>
+            <td *ngIf="reglement.deleteAction">
+              <h6>Confirmez la supression de cet élément!</h6>
+              <button class="btn btn-outline-dark" title="Valider" type="button" (click)="deleteReglement(reglement)">
+                <em class="fa fa-check"></em>
+              </button>
+              &nbsp;&nbsp;
+              <button class="btn btn-outline-dark" title="Annuler" type="button" (click)="cancelDeleteActionReglement(reglement)">
+                <em class="fa fa-remove"></em>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="row">
+          <ngb-pagination (pageChange)="onPageChangeReglement($event)" [collectionSize]="totalItemsReglement" [page]="pageReglement" [pageSize]="pageSizeReglement" aria-label="Default pagination"></ngb-pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

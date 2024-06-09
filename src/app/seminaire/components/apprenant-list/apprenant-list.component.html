@@ -1,0 +1,128 @@
+<app-planning-view [planning]="planning"></app-planning-view>
+
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+      <div class="row">
+        <div class="col-3 d-flex align-items-center">
+          <button class="col-12 btn btn-outline-primary" type="button" (click)="onViewListPlanning()">
+            Liste planning
+          </button>
+        </div>
+        <div class="col-6 d-flex align-items-center justify-content-center">
+          <h6 class="m-0 font-weight-bold text-primary text-center">Listes des inscrits</h6>
+        </div>
+        <div class="col-3 d-flex align-items-center">
+          <button class="col-12 btn btn-outline-primary" type="button" (click)="onRegisterApprenant()">
+            Inscrire
+          </button>
+        </div>
+      </div>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12">
+        <div class="table-responsive">
+          <table class="table text-white table-bordered">
+            <tr>
+              <td style="background-color: #285001;">Total avance encaissé :</td>
+              <td style="background-color: #285001;">{{montantTotalPaiement && montantTotalPaiement.totalAvance ? montantTotalPaiement.totalAvance : 0}}</td>
+              <td style="background-color: #d6c100;">Total montant restant :</td>
+              <td style="background-color: #d6c100;">{{montantTotalPaiement && montantTotalPaiement.totalReliquat ? montantTotalPaiement.totalReliquat : 0}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4 col-lg-4 col-sm-12 offset-md-5 offset-lg-5 text-end">
+            <button type="button" class="btn btn-outline-secondary" (click)="downloadPDF()">Télécharger en PDF</button>
+        </div>
+      <div class="col-md-3 col-lg-3 col-sm-12">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="tapez votre recherche..." aria-label="tapez votre recherche..." aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2"><em class="fa fa-search"></em></span>
+          </div>
+        </div>
+      </div>
+    </div>
+      <div class="table-responsive">
+          <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+              <thead>
+                  <tr>
+                      <th>#</th>
+                      <th>Nom</th>
+                      <th>Prénom</th>
+                      <th>Email</th>
+                      <th>Téléphone</th>
+                      <th>Avances</th>
+                      <th>Reliquat</th>
+                      <th>Reglements</th>
+                      <th>Paiements PDF</th>
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let apprenant of apprenants | searchFilter: searchTerm">
+                    <td>{{apprenants.indexOf(apprenant)+1}}</td>
+                    <td>{{apprenant.nom}}</td>
+                    <td>{{apprenant.prenom}}</td>
+                    <td>{{apprenant.email}}</td>
+                    <td>{{apprenant.telephone}}</td>
+                    <td>{{apprenant.paiement?.avance}}</td>
+                    <td class="text-white" [ngStyle]="{'background-color':
+                    apprenant && apprenant.paiement
+                    && apprenant.paiement.reliquat <= 0 ?
+                    '#285001' : '#d6c100'} ">
+                      {{apprenant.paiement?.reliquat}}
+                    </td>
+                    <td>
+                      <button class="btn btn-outline-dark" type="button" (click)="open(modalContent, apprenant)">
+                        Gérer
+                      </button>
+                    </td>
+                    <td>
+                      <button class="btn btn-outline-dark" type="button" (click)="downloadPaiementsApprenantPDF(apprenant)">
+                        Télécharger
+                      </button>
+                    </td>
+                    <td *ngIf="!apprenant.deleteAction">
+                      <button class="btn btn-outline-dark" type="button" (click)="onEdit(apprenant)">
+                        <em class="fa fa-pen"></em>
+                      </button>
+                      &nbsp;&nbsp;
+                      <button class="btn btn-outline-dark" type="button" (click)="onDelete(apprenant)">
+                        <em class="fa fa-trash"></em>
+                      </button>
+                    </td>
+                    <td *ngIf="apprenant.deleteAction">
+                      <h6>Confirmez la supression de l'inscription!</h6>
+                      <button class="btn btn-outline-dark" title="Valider" type="button" (click)="deleteApprenant(apprenant)">
+                        <em class="fa fa-check"></em>
+                      </button>
+                      &nbsp;&nbsp;
+                      <button class="btn btn-outline-dark" title="Annuler" type="button" (click)="cancelDeleteAction(apprenant)">
+                        <em class="fa fa-remove"></em>
+                      </button>
+                    </td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+  </div>
+  <div class="card-footer">
+    <ngb-pagination (pageChange)="onPageChange($event)" [collectionSize]="totalItems" [page]="page" [pageSize]="pageSize" aria-label="Default pagination"></ngb-pagination>
+  </div>
+</div>
+
+<ng-template #modalContent let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">
+      Gestion des paiements inscriptions
+    </h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+    <app-reglement [paiement]="paiement" (onAdd)="onAddReglement($event)"></app-reglement>
+	</div>
+</ng-template>

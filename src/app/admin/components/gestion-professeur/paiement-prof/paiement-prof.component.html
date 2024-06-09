@@ -1,0 +1,44 @@
+<div class="card shadow mb-4">
+  <div class="card-body">
+    <alert></alert>
+    <form class="row g-3" [formGroup]="paiementForm" (ngSubmit)="paiementEdit && paiementEdit.id ? edit() : save()">
+      <div class="col-md-6 col-sm-12">
+        <label for="montantHeure" class="form-label">Montant par Heure</label>
+        <input type="number" class="form-control" id="montantHeure" formControlName="montantHeure" (keyup)="onChangeMontantHeureValue($event)">
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <label for="nombreHeure" class="form-label">Nombre Heure</label>
+        <input type="number" class="form-control" id="nombreHeure" formControlName="nombreHeure" (keyup)="onChangeNombreHeureValue($event)">
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <label for="brs" class="form-label">BRS %</label>
+        <input type="number" class="form-control" id="brs" formControlName="brs" (keyup)="onChangeBRSValue($event)">
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <label for="honoraireBrut" class="form-label">Honoraire Brut</label>
+        <input type="number" class="form-control" id="honoraireBrut" formControlName="honoraireBrut">
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <label for="honoraireNet" class="form-label">Honoraire Net</label>
+        <input type="number" class="form-control" id="honoraireNet" formControlName="honoraireNet">
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <label for="totalPayer" class="form-label">Montant payé</label>
+        <input type="number" class="form-control" id="totalPayer" formControlName="avance">
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <label for="restant" class="form-label">Restant</label>
+        <input type="number" class="form-control" id="restant" formControlName="restant">
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <label for="totalPayer" class="form-label">Montant réglement</label>
+        <input type="number" class="form-control" id="totalPayer" formControlName="totalPayer" (keyup)="onCalculateRestant($event)">
+      </div>
+      <div class="col-12">
+        <button type="submit" [disabled]="!paiementForm.valid" class="btn btn-primary">Enregistrer</button>
+        &nbsp;&nbsp;
+        <button type="button" class="btn btn-outline-dark" (click)="cancel()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>

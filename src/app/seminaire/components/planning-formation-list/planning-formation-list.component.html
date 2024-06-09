@@ -1,0 +1,127 @@
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+      <div class="row">
+        <div class="col-8">
+          <h6 class="m-0 font-weight-bold text-primary">Listes des planning</h6>
+        </div>
+        <div class="col-4 text-end">
+          <button type="button" class="btn btn-outline-secondary" (click)="downloadPDF()">Télécharger en PDF</button>
+        </div>
+      </div>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12">
+        <div class="table-responsive">
+          <table class="table text-white table-bordered">
+            <tr>
+              <td style="background-color: #285001;">Total cout des planning :</td>
+              <td style="background-color: #285001;">{{totalCout}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 col-lg-3 col-sm-12 offset-md-9 offset-lg-9">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="tapez votre recherche..." aria-label="tapez votre recherche..." aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2"><em class="fa fa-search"></em></span>
+          </div>
+        </div>
+      </div>
+    </div>
+      <div class="table-responsive">
+          <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+              <thead>
+                  <tr>
+                      <th>Formation</th>
+                      <th>Date début</th>
+                      <th>Date Fin</th>
+                      <th>Coût</th>
+                      <th>Modules Professeurs</th>
+                      <th>Dépenses</th>
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let planning of plannings | searchFilter: searchTerm">
+                      <td>{{planning.libelle}}</td>
+                      <td>{{planning.dateDebut | date: 'dd/MM/YYYY'}}</td>
+                      <td>{{planning.dateFin | date: 'dd/MM/YYYY'}}</td>
+                      <td>{{planning.cout}}</td>
+                      <td>
+                        <button class="btn btn-outline-dark" type="button" (click)="open(modalContent, planning, 'modules')">
+                          Voir
+                        </button>
+                      </td>
+                      <td>
+                        <button class="btn btn-outline-dark" type="button" (click)="open(modalContent, planning)">
+                          Gérer
+                        </button>
+                      </td>
+                      <td *ngIf="!planning.deleteAction">
+                        <button class="btn btn-outline-dark" type="button" (click)="onEdit(planning)">
+                          <em class="fa fa-pen"></em>
+                        </button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-outline-dark" type="button" (click)="onDelete(planning)">
+                          <em class="fa fa-trash"></em>
+                        </button>
+                      </td>
+                      <td *ngIf="planning.deleteAction">
+                        <h6>Confirmez la supression du planning!</h6>
+                        <button class="btn btn-outline-dark" title="Valider" type="button" (click)="deletePlanning(planning)">
+                          <em class="fa fa-check"></em>
+                        </button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-outline-dark" title="Annuler" type="button" (click)="cancelDeleteAction(planning)">
+                          <em class="fa fa-remove"></em>
+                        </button>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+  </div>
+  <div class="card-footer">
+    <ngb-pagination (pageChange)="onPageChange($event)" [collectionSize]="totalItems" [page]="page" [pageSize]="pageSize" aria-label="Default pagination"></ngb-pagination>
+  </div>
+</div>
+
+<ng-template #modalContent let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title"  *ngIf="view==='depenses'">
+      Gestion des dépenses quotidiennes de la formation
+    </h4><h4 class="modal-title" *ngIf="view==='modules'">
+      Liste des modules
+    </h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+        <div *ngIf="view==='depenses'">
+            <app-depenses [planning]="planningFormation"></app-depenses>
+        </div>
+        <div *ngIf="view==='modules'">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Module</th>
+                        <th>Professeur</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr *ngFor="let module of modulesPlanning">
+                        <td>{{modulesPlanning.indexOf(module) + 1}}</td>
+                        <td>{{module.module?.libelle}}</td>
+                        <td>{{module.professeur?.nom}} {{module.professeur?.prenom}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+	</div>
+</ng-template>

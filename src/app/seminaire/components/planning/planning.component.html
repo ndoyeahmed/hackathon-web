@@ -1,0 +1,39 @@
+<h3>
+  Planning des formations
+  <div class="clearfix"></div>
+</h3>
+
+<br><br>
+
+<ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+  <li [ngbNavItem]="1">
+		<button ngbNavLink (click)="onNavChange()">Ajouter Planning Formation</button>
+		<ng-template ngbNavContent>
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary"></h6>
+        </div>
+        <div class="card-body">
+			    <app-planning-formation-add [planningEdit]="planningEdit"></app-planning-formation-add>
+        </div>
+      </div>
+		</ng-template>
+	</li>
+  <li [ngbNavItem]="2">
+		<button ngbNavLink (click)="onNavChange()">Liste Planning Formation</button>
+		<ng-template ngbNavContent>
+			<app-planning-formation-list (editEvent)="onEditPlanning($event)" [totalCout]="totalCout" [plannings]="planningFormations" [page]="page" [pageSize]="pageSize" [totalPage]="totalPage" [totalItems]="totalItems">
+      </app-planning-formation-list>
+		</ng-template>
+	</li>
+	<!-- <li [ngbNavItem]="3">
+		<button ngbNavLink>Calendrier Planning Formation</button>
+		<ng-template ngbNavContent>
+      <br>
+			<app-plannig-formation></app-plannig-formation>
+		</ng-template>
+	</li> -->
+
+</ul>
+
+<div [ngbNavOutlet]="nav" class="mt-2"></div>

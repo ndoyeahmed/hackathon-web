@@ -1,0 +1,84 @@
+<div class="card shadow mb-4">
+  <!-- <div class="card-header py-3 d-flex align-items-center">
+      <h6 class="m-0 font-weight-bold text-primary">Gestion des réglements d'une inscription</h6>
+  </div> -->
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12 mb-4" *ngIf="!isAdd">
+        <button class="btn btn-outline-primary" type="button" (click)="isAdd = true;">
+          Effectuer un paiement
+        </button>
+      </div>
+      <div class="col-12" *ngIf="isAdd">
+        <alert></alert>
+        <form class="row g-3" [formGroup]="reglementForm"
+          (ngSubmit)="reglementEdit && reglementEdit.id ? edit() : save()">
+          <div class="col-md-6 col-sm-12 mb-2">
+            <input placeholder="Saisir le montant" type="number" class="form-control" id="montant" formControlName="montant">
+          </div>
+
+          <div class="col-6">
+            <button type="submit" [disabled]="!reglementForm.valid" class="btn btn-primary">Enregistrer</button>
+            &nbsp;&nbsp;
+            <button type="button" class="btn btn-outline-dark" (click)="cancel()">Annuler</button>
+          </div>
+        </form>
+      </div>
+      <div class="col-12">
+        <div class="row">
+          <div class="col-md-3 col-lg-3 col-sm-12 offset-md-9 offset-lg-9">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="tapez votre recherche..." aria-label="tapez votre recherche..." aria-describedby="basic-addon2">
+              <div class="input-group-append">
+                <span class="input-group-text" id="basic-addon2"><em class="fa fa-search"></em></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Montant Versé</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let reglement of reglements | searchFilter: searchTerm">
+                <td>{{reglements.indexOf(reglement)+1}}</td>
+                <td>{{reglement.date | date : 'dd/MM/YYYY'}}</td>
+                <td>{{reglement.montant}}</td>
+                <td *ngIf="!reglement.deleteAction">
+                  <button class="btn btn-outline-dark" type="button" (click)="onEdit(reglement)">
+                    <em class="fa fa-pen"></em>
+                  </button>
+                  &nbsp;&nbsp;
+                  <button class="btn btn-outline-dark" type="button" (click)="onDelete(reglement)">
+                    <em class="fa fa-trash"></em>
+                  </button>
+                </td>
+                <td *ngIf="reglement.deleteAction">
+                  <h6>Confirmez la supression du réglement!</h6>
+                  <button class="btn btn-outline-dark" title="Valider" type="button"
+                    (click)="deleteReglement(reglement)">
+                    <em class="fa fa-check"></em>
+                  </button>
+                  &nbsp;&nbsp;
+                  <button class="btn btn-outline-dark" title="Annuler" type="button"
+                    (click)="cancelDeleteAction(reglement)">
+                    <em class="fa fa-remove"></em>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <ngb-pagination (pageChange)="onPageChange($event)" [collectionSize]="totalItems" [page]="page" [pageSize]="pageSize" aria-label="Default pagination"></ngb-pagination>
+  </div>
+</div>

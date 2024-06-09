@@ -1,0 +1,102 @@
+<div class="row mb-3" *ngIf="!isAdd">
+  <div class="col-4">
+    <button class="col-12 btn btn-outline-primary" type="button" (click)="isAdd = true;">
+      Ajouter une dépense
+    </button>
+  </div>
+</div>
+
+<!-- Formulaire ajout depense -->
+<div class="card shadow mb-4" *ngIf="isAdd">
+  <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Ajouter une nouvelle dépense</h6>
+  </div>
+  <div class="card-body">
+    <alert></alert>
+    <form class="row g-3" [formGroup]="depenseForm" (ngSubmit)="depenseEdit && depenseEdit.id ? editDepense() : saveDepense()">
+      <div class="col-md-6 col-sm-12">
+        <label for="libelle" class="form-label">Dépense</label>
+        <input type="text" class="form-control" id="libelle" formControlName="libelle">
+      </div>
+      <div class="col-md-6 col-sm-12">
+        <label for="montant" class="form-label">Montant</label>
+        <input type="number" class="form-control" id="montant" formControlName="montant">
+      </div>
+
+      <div class="col-12">
+        <button type="submit" [disabled]="!depenseForm.valid" class="btn btn-primary">Enregistrer</button>
+        &nbsp;&nbsp;
+        <button type="button" class="btn btn-outline-dark" (click)="cancel()">Annuler</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Tableau depense -->
+<div class="card shadow mb-4">
+  <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Listes des dépenses quotidiennes</h6>
+  </div>
+  <div class="card-body">
+    <div class="row mb-3">
+      <div class="col-6">
+        <div class="table-responsive">
+          <table class="table text-white table-bordered">
+            <tr style="background-color: #285001;">
+              <td>Montant total :</td>
+              <td>{{totalDepense}}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3 col-lg-3 col-sm-12 offset-md-9 offset-lg-9">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="tapez votre recherche..." aria-label="tapez votre recherche..." aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2"><em class="fa fa-search"></em></span>
+          </div>
+        </div>
+      </div>
+    </div>
+      <div class="table-responsive">
+          <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+              <thead>
+                  <tr>
+                      <th>Dépense</th>
+                      <th>Montant</th>
+                      <th>Date</th>
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr *ngFor="let mouvement of mouvementsDepense | searchFilter: searchTerm">
+                      <td>{{mouvement.libelleDepense}}</td>
+                      <td>{{mouvement.montant}}</td>
+                      <td>{{mouvement.date | date: 'dd/MM/YYYY'}}</td>
+                      <td *ngIf="!mouvement.deleteAction">
+                          <button class="btn btn-outline-dark" type="button" (click)="onEdit(mouvement)">
+                            <em class="fa fa-pen"></em>
+                          </button>
+                          &nbsp;&nbsp;
+                          <button class="btn btn-outline-dark" type="button" (click)="onDelete(mouvement)">
+                            <em class="fa fa-trash"></em>
+                          </button>
+                      </td>
+                      <td *ngIf="mouvement.deleteAction">
+                        <h6>Confirmez la supression de la dépense!</h6>
+                        <button class="btn btn-outline-dark" title="Valider" type="button" (click)="deleteDepense(mouvement)">
+                          <em class="fa fa-check"></em>
+                        </button>
+                        &nbsp;&nbsp;
+                        <button class="btn btn-outline-dark" title="Annuler" type="button" (click)="cancelDeleteAction(mouvement)">
+                          <em class="fa fa-remove"></em>
+                        </button>
+                      </td>
+                  </tr>
+              </tbody>
+          </table>
+      </div>
+  </div>
+</div>

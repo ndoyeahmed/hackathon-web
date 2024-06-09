@@ -1,0 +1,51 @@
+<div class="card shadow col-12">
+  <div class="card-header py-3">
+    <div class="row">
+      <div class="col-md-5 col-lg-5 col-sm-12">
+        <h4>Gestion des inscriptions aux formations</h4>
+      </div>
+      <div class="col-md-3 col-lg-3 col-sm-12 offset-md-4 offset-lg-4">
+        <div class="input-group ">
+          <input type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="tapez votre recherche..."
+                 aria-label="tapez votre recherche..." aria-describedby="basic-addon2">
+          <div class="input-group-append">
+            <span class="input-group-text" id="basic-addon2"><em class="fa fa-search"></em></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+          <th>Formation</th>
+          <th>Date début</th>
+          <th>Date Fin</th>
+          <th>Inscriptions</th>
+          <th>Liste inscriptions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let planning of planningFormations | searchFilter: searchTerm">
+          <td>{{planning.libelle}}</td>
+          <td>{{planning.dateDebut | date: 'dd/MM/YYYY'}}</td>
+          <td>{{planning.dateFin | date: 'dd/MM/YYYY'}}</td>
+          <td>
+            <button class="btn btn-outline-primary" (click)="onRegisterApprenant(planning.id)">Inscrire apprenant</button>
+          </td>
+          <td>
+            <button class="btn btn-outline-secondary" (click)="onViewListApprenant(planning.id)">Liste des apprenants
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer">
+    <ngb-pagination (pageChange)="onPageChange($event)" [collectionSize]="totalItems" [page]="page"
+                    [pageSize]="pageSize" aria-label="Default pagination"></ngb-pagination>
+  </div>
+</div>

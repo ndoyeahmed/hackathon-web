@@ -1,0 +1,95 @@
+<app-professeur-view [professeur]="professeur"></app-professeur-view>
+<div class="row">
+  <div class="col-md-3 col-lg-3 col-sm-12 offset-md-9 offset-lg-9">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" [(ngModel)]="searchTerm" placeholder="tapez votre recherche..." aria-label="tapez votre recherche..." aria-describedby="basic-addon2">
+      <div class="input-group-append">
+        <span class="input-group-text" id="basic-addon2"><em class="fa fa-search"></em></span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="table-responsive">
+  <table class="table table-bordered table-striped" width="100%" cellspacing="0">
+      <thead>
+          <tr>
+              <th>#</th>
+              <th>BRS %</th>
+              <th>Honoraire Brut</th>
+              <th>Honoraire Net</th>
+              <th>Montant payé</th>
+              <th *ngIf="typeHonoraire === 'encours'">Montant restant</th>
+              <th>Nombre heures</th>
+              <th>Montant par heure</th>
+              <th>Facture</th>
+              <th>Historique</th>
+              <th *ngIf="typeHonoraire === 'encours'">Actions</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr *ngFor="let formationProf of formationsProfesseurs | searchFilter: searchTerm">
+            <td>{{formationsProfesseurs.indexOf(formationProf)+1}}</td>
+            <td>{{formationProf.brs}}</td>
+            <td>{{formationProf.honoraireBrut}}</td>
+            <td>{{formationProf.honoraireNet}}</td>
+            <td>{{formationProf.avance}}</td>
+            <td *ngIf="typeHonoraire === 'encours'">{{formationProf.restant}}</td>
+            <td>{{formationProf.nombreHeure}}</td>
+            <td>{{formationProf.montantHeure}}</td>
+            <td *ngIf="!professeur.deleteAction">
+              <button class="btn btn-outline-dark" type="button" (click)="onDownloadFacture(formationProf)">
+                Télécharger
+              </button>
+            </td>
+            <td *ngIf="!professeur.deleteAction">
+              <button class="btn btn-outline-dark" type="button" (click)="open(modalContent, formationProf, 'historique')">
+                voir
+              </button>
+            </td>
+            <td *ngIf="!professeur.deleteAction && typeHonoraire === 'encours'">
+              <button class="btn btn-outline-dark" type="button" (click)="open(modalContent, formationProf, 'paiement')" *ngIf="typeHonoraire === 'encours'">
+                Payer
+              </button>
+              <!-- <button class="btn btn-outline-dark" type="button" (click)="onEdit(professeur)">
+                <em class="fa fa-pen"></em>
+              </button>
+              &nbsp;&nbsp;
+              <button class="btn btn-outline-dark" type="button" (click)="onDelete(professeur)">
+                <em class="fa fa-trash"></em>
+              </button> -->
+            </td>
+            <td *ngIf="professeur.deleteAction">
+              <h6>Confirmez la supression du paiement!</h6>
+              <!-- <button class="btn btn-outline-dark" title="Valider" type="button" (click)="deleteProfesseur(professeur)">
+                <em class="fa fa-check"></em>
+              </button>
+              &nbsp;&nbsp;
+              <button class="btn btn-outline-dark" title="Annuler" type="button" (click)="cancelDeleteAction(professeur)">
+                <em class="fa fa-remove"></em>
+              </button> -->
+            </td>
+          </tr>
+      </tbody>
+  </table>
+  <div class="row">
+    <ngb-pagination (pageChange)="onPageChange($event)" [collectionSize]="totalItems" [page]="page" [pageSize]="pageSize" aria-label="Default pagination"></ngb-pagination>
+  </div>
+</div>
+
+<ng-template #modalContent let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-title" *ngIf="modalContentValue === 'paiement'">
+      Effectuer un paiement
+    </h4>
+    <h4 class="modal-title" id="modal-basic-title" *ngIf="modalContentValue === 'historique'">
+      Historique des réglements pour paiement honoraire
+    </h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body" *ngIf="modalContentValue === 'paiement'">
+    <app-paiement-prof [formationProf]="formationProf" (onSavePaiement)="onSavePaiement($event)"></app-paiement-prof>
+	</div>
+  <div class="modal-body" *ngIf="modalContentValue === 'historique'">
+    <app-reglement-honoraire [formationProfesseurID]="formationProf.id"></app-reglement-honoraire>
+	</div>
+</ng-template>

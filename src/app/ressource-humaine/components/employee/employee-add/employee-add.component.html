@@ -1,0 +1,122 @@
+<div class="card shadow">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12">
+        <alert></alert>
+        <form class="row g-3" [formGroup]="employeForm"
+              (ngSubmit)="employeEdit && employeEdit.id ? edit() : save()">
+          <div class="col-md-6 col-sm-12 border-right">
+            <h5 class="text-center mb-3">Informations personnelles</h5>
+            <div class="row">
+              <div class="col-md-6 col-sm-12 mb-2">
+                <label for="nom" class="form-label">Nom</label>
+                <input type="text" class="form-control" id="nom" formControlName="nom">
+                <div *ngIf="onShowRequiredMsgError('nom')" class="text-danger">
+                  Champ obligatoire
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-12 mb-2">
+                <label for="prenom" class="form-label">Prénom</label>
+                <input type="text" class="form-control" id="prenom" formControlName="prenom">
+                <div *ngIf="onShowRequiredMsgError('prenom')" class="text-danger">
+                  Champ obligatoire
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-12 mb-2">
+                <label for="email" class="form-label">Email</label>
+                <input type="text" class="form-control" id="email" formControlName="email">
+                <div *ngIf="onShowRequiredMsgError('email')" class="text-danger">
+                  Champ obligatoire
+                </div>
+                <div *ngIf="onShowEmailMsgError('email')" class="text-danger">
+                  Champ obligatoire
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-12 mb-2">
+                <label for="telephone" class="form-label">Téléphone</label>
+                <input type="text" class="form-control" id="telephone" formControlName="telephone">
+                <div *ngIf="onShowRequiredMsgError('telephone')" class="text-danger">
+                  Champ obligatoire
+                </div>
+              </div>
+              <div class="col-md-12 col-sm-12 mb-2">
+                <label for="adresse" class="form-label">Adresse</label>
+                <textarea class="form-control" cols="12" rows="4" id="adresse" formControlName="adresse"></textarea>
+                <div *ngIf="onShowRequiredMsgError('adresse')" class="text-danger">
+                  Champ obligatoire
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 col-sm-12">
+            <h5 class="text-center mb-3">Contrat</h5>
+            <div class="row">
+              <div class="col-md-6 col-sm-12 mb-2">
+                <label for="dateDebut" class="form-label">Date début</label>
+                <input type="date" class="form-control" id="dateDebut" formControlName="dateDebut">
+                <div *ngIf="onShowRequiredMsgError('dateDebut')" class="text-danger">
+                  Champ obligatoire
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-12 mb-2">
+                <label for="dateFin" class="form-label">Date fin</label>
+                <input type="date" class="form-control" id="dateFin" formControlName="dateFin">
+                <div *ngIf="onShowRequiredMsgError('dateFin')" class="text-danger">
+                  Champ obligatoire
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-12 mb-2">
+                <label for="salairebrut" class="form-label">Salaire Brut</label>
+                <input (blur)="calculateRetenue()" type="number" class="form-control" id="salairebrut" formControlName="salaireBrut">
+                <div *ngIf="onShowRequiredMsgError('salaireBrut')" class="text-danger">
+                  Champ obligatoire
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-12 mb-2">
+                <label for="transport" class="form-label">Indemnité de transport</label>
+                <input (blur)="calculateRetenue()" type="number" class="form-control" id="transport" formControlName="transport">
+                <div *ngIf="onShowRequiredMsgError('transport')" class="text-danger">
+                  Champ obligatoire
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-12 mb-2">
+                <label for="pourcentageRetenu" class="form-label">Pourcentage retenue (%)</label>
+                <input (blur)="calculateRetenue()" type="number" class="form-control" id="pourcentageRetenu" formControlName="pourcentageRetenue">
+                <div *ngIf="onShowRequiredMsgError('pourcentageRetenue')" class="text-danger">
+                  Champ obligatoire
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-12 mb-2">
+                <label for="retenue" class="form-label">Retenue</label>
+                <input type="number" class="form-control" id="retenue" formControlName="retenue">
+                <div *ngIf="onShowRequiredMsgError('retenue')" class="text-danger">
+                  Champ obligatoire
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-12 mb-2">
+                <label for="prime" class="form-label">Prime</label>
+                <input (blur)="calculateSalaireNet()" type="number" class="form-control" id="prime" formControlName="prime">
+                <div *ngIf="onShowRequiredMsgError('prime')" class="text-danger">
+                  Champ obligatoire
+                </div>
+              </div>
+              <div class="col-md-6 col-sm-12 mb-2">
+                <label for="salairenet" class="form-label">Salaire Net</label>
+                <input type="number" class="form-control" id="salairenet" formControlName="salaireNet">
+                <div *ngIf="onShowRequiredMsgError('salaireNet')" class="text-danger">
+                  Champ obligatoire
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 align-items-center justify-content-end d-flex">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            &nbsp;&nbsp;
+            <button type="button" class="btn btn-outline-dark" (click)="cancel()">Annuler</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
